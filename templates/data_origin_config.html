@@ -1,0 +1,17 @@
+{% extends 'bootstrap/base.html' %}  #声明继承
+{% import '_macro.html' as ui %}
+
+{% block title %}{{ title_name }}{% endblock %}
+
+{% block navbar %}
+    {{ nav.top.render() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>数据源配置</h1>
+    </div>
+</div>
+{% endblock content %}
+
