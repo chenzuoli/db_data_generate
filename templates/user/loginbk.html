@@ -1,0 +1,29 @@
+{% extends 'bootstrap/base.html' %}  #声明继承
+{% import '_macro.html' as ui %}
+
+{% block title %}{{ title_name }}{% endblock %}
+
+{% block navbar %}
+{{ nav.top.render() }}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>{{ self.title() }}</h1>
+    </div>
+</div>
+<div>
+    {% from "/user/_formhelpers.html" import render_field %}
+    <form method=post>
+        {{ form.csrf_token }}
+        <dl>
+            {{ render_field(form.email) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.accept_tos) }}
+        </dl>
+        <p><input type=submit value=Register>
+    </form>
+</div>
+{% endblock content %}
+
