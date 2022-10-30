@@ -51,3 +51,8 @@ Flask + Bootstrap
 ## 数据生成
 
 选择不同的数据库类型，生成不同的sql语句，或插入到不同的数据库中
+
+# 项目启动
+```commandline
+python main.py
+```
