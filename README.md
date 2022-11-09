@@ -52,7 +52,11 @@ Flask + Bootstrap
 
 选择不同的数据库类型，生成不同的sql语句，或插入到不同的数据库中
 
-# 项目启动
+# 快速开始
 ```commandline
 python main.py
 ```
+
+
+# 一起开发
+微信我：PAIN_7771

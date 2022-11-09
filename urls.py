@@ -6,6 +6,7 @@ import config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from models.user import User
+from models.connections import Connections
 from flask_bootstrap import Bootstrap
 from flask_nav import Nav
 from flask_nav.elements import *
@@ -26,7 +27,7 @@ app.config['SECRET_KEY'] = 'Iamasecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:12345678@localhost:3306/datagen'
 
 # 初始化admin对象，绑定app对象，指定模板
-admin = Admin(app, name='microblog', template_mode='bootstrap3')
+admin = Admin(app, name='数寻平台', template_mode='bootstrap3')
 
 # 数据库连接
 engine = create_engine(config.DB_URI)
@@ -36,13 +37,14 @@ db = SQLAlchemy(app)
 
 # Add administrative views here
 admin.add_view(ModelView(User, session))
+admin.add_view(ModelView(Connections, session))
 
 # 菜单栏格式
 # 如果某个菜单栏有多个子目录，则使用Subgroup代替View
 nav = Nav()
 nav.register_element('top', Navbar(u'数寻平台',
                                    View(u'主页', 'index'),
-                                   View(u'数据源', 'about'),
+                                   View(u'数据源', 'data_origin'),
                                    View(u'数据查询', 'about'),
                                    View(u'数据生成', 'about'),
                                    View(u'注册', 'register'),
@@ -83,6 +85,10 @@ def service():
 @app.route('/about')
 def about():
     return 'about'
+
+@app.route('/admin/data_origin_config')
+def data_origin():
+    return redirect(url_for("/admin/connections.html"))
 
 
 @app.route('/register', methods=['GET', 'POST'])
