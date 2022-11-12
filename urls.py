@@ -1,18 +1,21 @@
+import logging
+
 from flask import Flask, render_template, redirect, flash
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from flask_sqlalchemy import SQLAlchemy
-import config
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from models.user import User
-from models.connections import Connections
+from flask_babelex import Babel
 from flask_bootstrap import Bootstrap
 from flask_nav import Nav
 from flask_nav.elements import *
-import logging
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
+import config
+from models.connections import Connections
+from models.dataorigin import DataOriginView, DataOrigin
 from models.register import RegisterForm
+from models.user import User
 
 # 设置日志级别
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s', datefmt='%Y/%m/%d %H:%M:%S')  # 输出到控制台，设置格式
@@ -20,11 +23,16 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s', datefm
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
+babel = Babel(app)
+
 # set optional bootswatch theme
 # 设置Flask_admin样式
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 app.config['SECRET_KEY'] = 'Iamasecretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:12345678@localhost:3306/datagen'
+
+# 显示中文
+app.config['BABEL_DEFAULT_LOCALE'] = 'zh_CN'
 
 # 初始化admin对象，绑定app对象，指定模板
 admin = Admin(app, name='数寻平台', template_mode='bootstrap3')
@@ -38,6 +46,7 @@ db = SQLAlchemy(app)
 # Add administrative views here
 admin.add_view(ModelView(User, session))
 admin.add_view(ModelView(Connections, session))
+admin.add_view(DataOriginView(DataOrigin, db.session, name=u'数据源', category=u'数据源配置'))
 
 # 菜单栏格式
 # 如果某个菜单栏有多个子目录，则使用Subgroup代替View
@@ -86,9 +95,10 @@ def service():
 def about():
     return 'about'
 
+
 @app.route('/admin/data_origin_config')
 def data_origin():
-    return redirect(url_for("/admin/connections.html"))
+    return render_template("/admin/dataorigin.html")
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -116,4 +126,3 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template("/user/login.html", title_name="数寻平台-登录")
-

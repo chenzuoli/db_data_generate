@@ -3,7 +3,9 @@ CREATE TABLE if not exists `datagen`.`user` (
 	id BIGINT auto_increment primary key not NULL comment '主键自增id',
 	username varchar(100) NOT NULL comment '用户名',
 	email varchar(50) not null comment '邮箱',
-	_password_hash varchar(200) not null comment '密码（hash值）'
+	_password_hash varchar(200) not null comment '密码（hash值）',
+    created_at timestamp default CURRENT_TIMESTAMP comment '创建时间',
+    updated_at timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间'
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
@@ -19,8 +21,15 @@ create table if not exists datagen.connections(
     port varchar(10) comment '端口号',
     db varchar(20) comment '数据库',
     param varchar(100) comment '连接参数',
-    driver_jar varchar(100) comment 'jar包文件服务器地址'
+    driver_jar varchar(100) comment 'jar包文件服务器地址',
+    created_at timestamp default CURRENT_TIMESTAMP comment '创建时间',
+    updated_at timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间'
 )ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
 
+alter table `datagen`.`user` add column created_at timestamp default CURRENT_TIMESTAMP comment '创建时间';
+alter table `datagen`.`user` add column updated_at timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间';
+
+alter table datagen.connections add column created_at timestamp default CURRENT_TIMESTAMP comment '创建时间';
+alter table datagen.connections add column updated_at timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间';

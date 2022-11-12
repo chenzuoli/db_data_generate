@@ -1,8 +1,8 @@
 # coding=utf-8
 
+from sqlalchemy import Column
 from sqlalchemy.orm import registry
 from sqlalchemy.types import String, Integer
-from sqlalchemy import Column
 from werkzeug.security import generate_password_hash, check_password_hash
 
 my_registry = registry()
@@ -11,6 +11,9 @@ my_registry = registry()
 Base = my_registry.generate_base()
 
 
+"""
+flask admin用
+"""
 class Connections(Base):
     """
     数据源管理
