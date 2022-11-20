@@ -4,13 +4,13 @@
 {% block title %}{{ title_name }}{% endblock %}
 
 {% block navbar %}
-{{ nav.top.render() }}
+    {{ nav.top.render() }}
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div class="container">
-        <h1>{{title_name}}</h1>
+        <h1>{{ self.title() }}</h1>
     </div>
 </div>
 {% endblock content %}

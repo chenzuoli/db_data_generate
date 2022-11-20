@@ -13,7 +13,8 @@ from sqlalchemy.orm import Session
 
 import config
 from models.connections import Connections
-from models.dataorigin import DataOriginView, DataOrigin
+from models.dataorigin import DataOriginView, DataOrigin, DataOriginForm
+from models.dictionary import Dictionary
 from models.register import RegisterForm
 from models.user import User
 
@@ -44,9 +45,10 @@ session = Session(engine)
 db = SQLAlchemy(app)
 
 # Add administrative views here
-admin.add_view(ModelView(User, session))
-admin.add_view(ModelView(Connections, session))
+admin.add_view(ModelView(User, session, name='用户'))
+admin.add_view(ModelView(Connections, session, name='连接信息'))
 admin.add_view(DataOriginView(DataOrigin, db.session, name=u'数据源', category=u'数据源配置'))
+admin.add_view(DataOriginView(Dictionary, db.session, name=u'词库'))
 
 # 菜单栏格式
 # 如果某个菜单栏有多个子目录，则使用Subgroup代替View
@@ -54,9 +56,10 @@ nav = Nav()
 nav.register_element('top', Navbar(u'数寻平台',
                                    View(u'主页', 'index'),
                                    View(u'数据源', 'data_origin'),
-                                   View(u'数据查询', 'about'),
-                                   View(u'数据生成', 'about'),
+                                   View(u'数据查询', 'search'),
+                                   View(u'数据生成', 'generate'),
                                    View(u'注册', 'register'),
+                                   View(u'登录', 'login'),
                                    # Subgroup(u'数据生成',
                                    #          View(u'Mysql', 'about'),
                                    #          Separator(),
@@ -78,27 +81,48 @@ def index():
 
 @app.route("/<name>")
 def home(name):
-    return render_template("home.html", name=name)
+    return render_template("home.html", title_name=name)
 
 
 @app.errorhandler(404)
 def page_not_found():
-    return render_template('404.html'), 404
-
-
-@app.route('/service')
-def service():
-    return 'service'
-
+    return render_template('404.html', title_name="页面找不到啦"), 404
 
 @app.route('/about')
 def about():
-    return 'about'
+    return render_template("/about.html", title_name="关于我")
 
 
 @app.route('/admin/data_origin_config')
 def data_origin():
+    form = DataOriginForm(request.form)
+    logging.info("form validate: %s" % form.validate())
+    logging.info("form request method: %s" % request.method)
+    if request.method == 'POST' and form.validate():
+        logging.info(1)
+        user = User(form.username.data, form.email.data, form.password.data)
+        logging.info(2)
+        session.add(user)
+        logging.info(3)
+        session.commit()
+        logging.info(4)
+        flash('注册成功，感谢。')
+        return redirect(url_for("login"))
+    else:
+        flash("注册失败。")
+        logging.warning("注意：注册表单数据输入不正确：用户名：%s，邮箱：%s，密码：%s" % (
+            form.username.data, form.email.data, form.password.data))
     return render_template("/admin/dataorigin.html")
+
+
+@app.route("/search")
+def search():
+    return render_template("/main/search.html", title_name='数据查询')
+
+
+@app.route("/generate")
+def generate():
+    return render_template("/main/generate.html", title_name="数据生成")
 
 
 @app.route('/register', methods=['GET', 'POST'])

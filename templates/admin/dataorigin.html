@@ -18,13 +18,17 @@
     <form method=post>
         {{ form.csrf_token }}
         <dl>
+            {{ render_field(form.table_type) }}
+            {{ render_field(form.url) }}
             {{ render_field(form.username) }}
-            {{ render_field(form.email) }}
             {{ render_field(form.password) }}
-            {{ render_field(form.confirm) }}
-            {{ render_field(form.accept_tos) }}
+            {{ render_field(form.host) }}
+            {{ render_field(form.port) }}
+            {{ render_field(form.db) }}
+            {{ render_field(form.param) }}
+            {{ render_field(form.driver_jar) }}
         </dl>
-        <p><input type=submit value=注册>
+        <p><input type=submit value=添加数据源>
     </form>
 </div>
 {% endblock content %}
